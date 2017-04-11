@@ -1,0 +1,12 @@
+{
+    "name": "gplcart/twig",
+    "type": "gplcart-module",
+    "description": "A GPL Cart module that allows to render .twig templates",
+    "keywords": ["gplcart", "ecommerce", "shopping cart", "gplcart module", "php", "twig"],
+    "license": "GPL-3.0+",
+    "require": {
+        "gplcart/composer-module-installer": "*"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
