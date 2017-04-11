@@ -59,7 +59,6 @@ class Twig extends Module
             'author' => 'Iurii Makukh ',
             'core' => '1.x',
             'license' => 'GPL-3.0+',
-            'status' => true,
             'configure' => 'admin/module/settings/twig',
             'settings' => array(
                 'cache' => true,
