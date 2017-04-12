@@ -122,26 +122,12 @@ class Twig extends Module
         if (is_file($template)) {
 
             if (empty($this->twig)) {
-                $this->initTwig();
+                $this->library->load('twig');
                 $this->settings = $this->config->module('twig');
             }
 
             $rendered = $this->render($template, $data, $object);
         }
-    }
-
-    /**
-     * Load and initialize TWIG library
-     */
-    public function initTwig()
-    {
-        $this->library->load('twig');
-
-        if (!class_exists('Twig_Autoloader')) {
-            throw new \InvalidArgumentException('Class Twig_Autoloader not found');
-        }
-
-        \Twig_Autoloader::register();
     }
 
     /**
