@@ -237,7 +237,11 @@ class Twig extends Module
         });
 
         $functions[] = new \Twig_SimpleFunction('d', function ($key = null) use ($object) {
-            d($object->getData($key));
+            if(function_exists('d')){
+                d($object->getData($key)); // Kint
+            } else {
+                print_r($object->getData($key), true);
+            }
         });
 
         $functions[] = new \Twig_SimpleFunction('filter', function ($text, $filter = null) use ($object) {

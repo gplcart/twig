@@ -3,6 +3,31 @@
 
 Twig is a [GPL Cart](https://github.com/gplcart/gplcart) module that integrates [TWIG](https://twig.sensiolabs.org) template engine into your GPL Cart site. Essentially it tries to parse every template file with .twig extension
 
+Custom TWIG functions added by this module:
+
+- error()
+- text()
+- access()
+- url()
+- isSuperadmin()
+- date()
+- attributes()
+- config()
+- settings()
+- summary()
+- user()
+- store()
+- d()
+- filter()
+- truncate()
+- cart()
+- compare()
+- wishlist()
+- menu()
+- prop
+- path()
+
+See `\gplcart\core\Controller` for corresponding methods
 
 **Installation**
 
