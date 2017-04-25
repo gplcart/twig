@@ -47,29 +47,6 @@ class Twig extends Module
     }
 
     /**
-     * Module info
-     * @return array
-     */
-    public function info()
-    {
-        return array(
-            'name' => 'Twig',
-            'version' => GC_VERSION,
-            'description' => 'A GPL Cart module that allows to render .twig templates',
-            'author' => 'Iurii Makukh ',
-            'core' => '1.x',
-            'license' => 'GPL-3.0+',
-            'configure' => 'admin/module/settings/twig',
-            'settings' => array(
-                'cache' => true,
-                'debug' => false,
-                'auto_reload' => false,
-                'strict_variables' => false
-            ),
-        );
-    }
-
-    /**
      * Implements hook "library.list"
      * @param array $libraries
      */
@@ -135,7 +112,7 @@ class Twig extends Module
             $this->library->load('twig');
             $this->settings = $this->config->module('twig');
         }
-        
+
         if (isset($this->twig[$path])) {
             return $this->twig[$path];
         }
@@ -237,7 +214,7 @@ class Twig extends Module
         });
 
         $functions[] = new \Twig_SimpleFunction('d', function ($key = null) use ($object) {
-            if(function_exists('d')){
+            if (function_exists('d')) {
                 d($object->getData($key)); // Kint
             } else {
                 print_r($object->getData($key), true);
