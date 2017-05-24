@@ -229,22 +229,6 @@ class Twig extends Module
             return $object->truncate($string, $length, $trimmarker);
         });
 
-        $functions[] = new \Twig_SimpleFunction('cart', function ($key = null) use ($object) {
-            return $object->cart($key);
-        });
-
-        $functions[] = new \Twig_SimpleFunction('compare', function ($key = null) use ($object) {
-            return $object->compare($key);
-        });
-
-        $functions[] = new \Twig_SimpleFunction('wishlist', function ($key = null) use ($object) {
-            return $object->wishlist($key);
-        });
-
-        $functions[] = new \Twig_SimpleFunction('menu', function (array $options = array()) use ($object) {
-            return $object->menu($options);
-        }, array('is_safe' => array('all')));
-
         $functions[] = new \Twig_SimpleFunction('prop', function ($name) use ($object) {
             return $object->prop($name);
         });

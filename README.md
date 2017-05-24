@@ -20,10 +20,6 @@ Custom TWIG functions added by this module:
 - d()
 - filter()
 - truncate()
-- cart()
-- compare()
-- wishlist()
-- menu()
 - prop
 - path()
 
