@@ -15,8 +15,6 @@ Custom TWIG functions added by this module:
 - config()
 - settings()
 - summary()
-- user()
-- store()
 - d()
 - filter()
 - truncate()

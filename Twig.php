@@ -205,14 +205,6 @@ class Twig extends Module
             return $object->summary($text, $xss, $filter);
         }, array('is_safe' => array('all')));
 
-        $functions[] = new \Twig_SimpleFunction('user', function ($item = null) use ($object) {
-            return $object->user($item);
-        });
-
-        $functions[] = new \Twig_SimpleFunction('store', function ($item = null) use ($object) {
-            return $object->store($item);
-        });
-
         $functions[] = new \Twig_SimpleFunction('d', function ($key = null) use ($object) {
             if (function_exists('d')) {
                 d($object->getData($key)); // Kint
