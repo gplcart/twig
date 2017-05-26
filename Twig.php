@@ -151,9 +151,7 @@ class Twig extends Module
         $twig = $this->getTwigInstance(implode('/', $parts), $object);
 
         $controller_data = $object->getData();
-        $merged = gplcart_array_merge($controller_data, $data);
-
-        return $twig->loadTemplate($file)->render($merged);
+        return $twig->loadTemplate($file)->render(array_merge($controller_data, $data));
     }
 
     /**
@@ -179,10 +177,6 @@ class Twig extends Module
 
         $functions[] = new \Twig_SimpleFunction('url', function ($path = '', array $query = array(), $absolute = false) use ($object) {
             return $object->url($path, $query, $absolute);
-        });
-
-        $functions[] = new \Twig_SimpleFunction('isSuperadmin', function ($user_id = null) use ($object) {
-            return $object->isSuperadmin($user_id);
         });
 
         $functions[] = new \Twig_SimpleFunction('date', function ($timestamp = null, $full = true, $unix_format = '') use ($object) {
@@ -219,10 +213,6 @@ class Twig extends Module
 
         $functions[] = new \Twig_SimpleFunction('truncate', function ($string, $length = 100, $trimmarker = '...') use ($object) {
             return $object->truncate($string, $length, $trimmarker);
-        });
-
-        $functions[] = new \Twig_SimpleFunction('prop', function ($name) use ($object) {
-            return $object->prop($name);
         });
 
         $functions[] = new \Twig_SimpleFunction('path', function ($path = null) use ($object) {

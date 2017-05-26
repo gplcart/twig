@@ -9,7 +9,6 @@ Custom TWIG functions added by this module:
 - text()
 - access()
 - url()
-- isSuperadmin()
 - date()
 - attributes()
 - config()
@@ -18,7 +17,6 @@ Custom TWIG functions added by this module:
 - d()
 - filter()
 - truncate()
-- prop
 - path()
 
 See `\gplcart\core\Controller` for corresponding methods
