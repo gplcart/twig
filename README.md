@@ -14,7 +14,6 @@ Custom TWIG functions added by this module:
 - config()
 - settings()
 - summary()
-- d()
 - filter()
 - truncate()
 - path()
