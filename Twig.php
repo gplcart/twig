@@ -9,20 +9,13 @@
 
 namespace gplcart\modules\twig;
 
-use gplcart\core\Module,
-    gplcart\core\Library;
+use gplcart\core\Module;
 
 /**
  * Main class for Twig module
  */
 class Twig extends Module
 {
-
-    /**
-     * Library class instance
-     * @var \gplcart\core\Library
-     */
-    protected $library;
 
     /**
      * An array of TWIG instances keyed by file directory
@@ -37,13 +30,11 @@ class Twig extends Module
     protected $settings = array();
 
     /**
-     * @param Library $library
+     * Constructor
      */
-    public function __construct(Library $library)
+    public function __construct()
     {
         parent::__construct();
-
-        $this->library = $library;
     }
 
     /**
@@ -76,7 +67,6 @@ class Twig extends Module
      */
     public function hookRouteList(array &$routes)
     {
-        // Module settings page
         $routes['admin/module/settings/twig'] = array(
             'access' => 'module_edit',
             'handlers' => array(
@@ -109,7 +99,7 @@ class Twig extends Module
     public function getTwigInstance($path, $object)
     {
         if (empty($this->twig)) {
-            $this->library->load('twig');
+            $this->getLibrary()->load('twig');
             $this->settings = $this->config->module('twig');
         }
 
@@ -219,7 +209,7 @@ class Twig extends Module
      */
     public function hookModuleEnableAfter()
     {
-        $this->library->clearCache();
+        $this->getLibrary()->clearCache();
     }
 
     /**
@@ -227,7 +217,7 @@ class Twig extends Module
      */
     public function hookModuleDisableAfter()
     {
-        $this->library->clearCache();
+        $this->getLibrary()->clearCache();
     }
 
     /**
@@ -235,7 +225,7 @@ class Twig extends Module
      */
     public function hookModuleInstallAfter()
     {
-        $this->library->clearCache();
+        $this->getLibrary()->clearCache();
     }
 
     /**
@@ -243,7 +233,7 @@ class Twig extends Module
      */
     public function hookModuleUninstallAfter()
     {
-        $this->library->clearCache();
+        $this->getLibrary()->clearCache();
     }
 
 }
