@@ -24,12 +24,6 @@ class Twig extends Module
     protected $twig = array();
 
     /**
-     * An array of module settings
-     * @var array
-     */
-    protected $settings = array();
-
-    /**
      * Constructor
      */
     public function __construct()
@@ -98,18 +92,18 @@ class Twig extends Module
      */
     public function getTwigInstance($path, $object)
     {
+        $options = array();
+
         if (empty($this->twig)) {
             $this->getLibrary()->load('twig');
-            $this->settings = $this->config->module('twig');
+            $options = $this->config->module('twig');
         }
 
         if (isset($this->twig[$path])) {
             return $this->twig[$path];
         }
 
-        $options = $this->settings;
-
-        if (!empty($this->settings['cache'])) {
+        if (!empty($options['cache'])) {
             $options['cache'] = __DIR__ . '/cache';
         }
 
@@ -146,59 +140,59 @@ class Twig extends Module
 
     /**
      * Adds custom functions and returns an array of Twig_SimpleFunction objects
-     * @param \gplcart\core\Controller $object
+     * @param \gplcart\core\Controller $controller
      * @return array
      */
-    protected function getDefaultFunctions($object)
+    protected function getDefaultFunctions($controller)
     {
         $functions = array();
 
-        $functions[] = new \Twig_SimpleFunction('error', function ($key = null, $has_error = null, $no_error = '') use ($object) {
-            return $object->error($key, $has_error, $no_error);
+        $functions[] = new \Twig_SimpleFunction('error', function ($key = null, $has_error = null, $no_error = '') use ($controller) {
+            return $controller->error($key, $has_error, $no_error);
         }, array('is_safe' => array('all')));
 
-        $functions[] = new \Twig_SimpleFunction('text', function ($text, $arguments = array()) use ($object) {
-            return $object->text($text, $arguments);
+        $functions[] = new \Twig_SimpleFunction('text', function ($text, $arguments = array()) use ($controller) {
+            return $controller->text($text, $arguments);
         }, array('is_safe' => array('all')));
 
-        $functions[] = new \Twig_SimpleFunction('access', function ($permission) use ($object) {
-            return $object->access($permission);
+        $functions[] = new \Twig_SimpleFunction('access', function ($permission) use ($controller) {
+            return $controller->access($permission);
         });
 
-        $functions[] = new \Twig_SimpleFunction('url', function ($path = '', array $query = array(), $absolute = false) use ($object) {
-            return $object->url($path, $query, $absolute);
+        $functions[] = new \Twig_SimpleFunction('url', function ($path = '', array $query = array(), $absolute = false) use ($controller) {
+            return $controller->url($path, $query, $absolute);
         });
 
-        $functions[] = new \Twig_SimpleFunction('date', function ($timestamp = null, $full = true, $unix_format = '') use ($object) {
-            return $object->date($timestamp, $full, $unix_format);
+        $functions[] = new \Twig_SimpleFunction('date', function ($timestamp = null, $full = true, $unix_format = '') use ($controller) {
+            return $controller->date($timestamp, $full, $unix_format);
         });
 
-        $functions[] = new \Twig_SimpleFunction('attributes', function ($attributes) use ($object) {
-            return $object->attributes($attributes);
+        $functions[] = new \Twig_SimpleFunction('attributes', function ($attributes) use ($controller) {
+            return $controller->attributes($attributes);
         }, array('is_safe' => array('all')));
 
-        $functions[] = new \Twig_SimpleFunction('config', function ($key = null, $default = null) use ($object) {
-            return $object->config($key, $default);
+        $functions[] = new \Twig_SimpleFunction('config', function ($key = null, $default = null) use ($controller) {
+            return $controller->config($key, $default);
         });
 
-        $functions[] = new \Twig_SimpleFunction('settings', function ($key = null, $default = null) use ($object) {
-            return $object->settings($key, $default);
+        $functions[] = new \Twig_SimpleFunction('settings', function ($key = null, $default = null) use ($controller) {
+            return $controller->settings($key, $default);
         });
 
-        $functions[] = new \Twig_SimpleFunction('summary', function ($text, $xss = false, $filter = null) use ($object) {
-            return $object->summary($text, $xss, $filter);
+        $functions[] = new \Twig_SimpleFunction('summary', function ($text, $xss = false, $filter = null) use ($controller) {
+            return $controller->summary($text, $xss, $filter);
         }, array('is_safe' => array('all')));
 
-        $functions[] = new \Twig_SimpleFunction('filter', function ($text, $filter = null) use ($object) {
-            return $object->filter($text, $filter);
+        $functions[] = new \Twig_SimpleFunction('filter', function ($text, $filter = null) use ($controller) {
+            return $controller->filter($text, $filter);
         }, array('is_safe' => array('all')));
 
-        $functions[] = new \Twig_SimpleFunction('truncate', function ($string, $length = 100, $trimmarker = '...') use ($object) {
-            return $object->truncate($string, $length, $trimmarker);
+        $functions[] = new \Twig_SimpleFunction('truncate', function ($string, $length = 100, $trimmarker = '...') use ($controller) {
+            return $controller->truncate($string, $length, $trimmarker);
         });
 
-        $functions[] = new \Twig_SimpleFunction('path', function ($path = null) use ($object) {
-            return $object->path($path);
+        $functions[] = new \Twig_SimpleFunction('path', function ($path = null) use ($controller) {
+            return $controller->path($path);
         });
 
         return $functions;
