@@ -12,7 +12,7 @@ Custom TWIG functions added by this module:
 - date()
 - attributes()
 - config()
-- settings()
+- configTheme()
 - summary()
 - filter()
 - truncate()

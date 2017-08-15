@@ -175,8 +175,8 @@ class Twig extends Module
             return $controller->config($key, $default);
         });
 
-        $functions[] = new \Twig_SimpleFunction('settings', function ($key = null, $default = null) use ($controller) {
-            return $controller->settings($key, $default);
+        $functions[] = new \Twig_SimpleFunction('configTheme', function ($key = null, $default = null) use ($controller) {
+            return $controller->configTheme($key, $default);
         });
 
         $functions[] = new \Twig_SimpleFunction('summary', function ($text, $xss = false, $filter = null) use ($controller) {
