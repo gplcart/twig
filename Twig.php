@@ -71,17 +71,19 @@ class Twig extends Module
 
     /**
      * Implements hook "template.render"
-     * @param string $template
+     * @param array $templates
      * @param array $data
      * @param null|string $rendered
      * @param \gplcart\core\Controller $object
      */
-    public function hookTemplateRender($template, $data, &$rendered, $object)
+    public function hookTemplateRender($templates, $data, &$rendered, $object)
     {
-        $template .= '.twig';
+        list($original, $overridden) = $templates;
 
-        if (is_file($template)) {
-            $rendered = $this->render($template, $data, $object);
+        if (is_file("$overridden.twig")) {
+            $rendered = $this->render("$overridden.twig", $data, $object);
+        } else if (is_file("$original.twig")) {
+            $rendered = $this->render("$original.twig", $data, $object);
         }
     }
 
@@ -139,12 +141,40 @@ class Twig extends Module
     }
 
     /**
+     * Validate a TWIG template syntax
+     * @param string $file
+     * @param \gplcart\core\Controller $controller
+     * @return boolean|string
+     */
+    public function validate($file, $controller)
+    {
+        if (!$controller instanceof \gplcart\core\Controller) {
+            throw new \InvalidArgumentException('Second argument must be instance of \gplcart\core\Controller');
+        }
+
+        $info = pathinfo($file);
+        $twig = $this->getTwigInstance($info['dirname'], $controller);
+
+        try {
+            $content = file_get_contents($file);
+            $twig->parse($twig->tokenize(new \Twig_Source($content, $info['basename'])));
+            return true;
+        } catch (\Twig_Error_Syntax $e) {
+            return $e->getMessage();
+        }
+    }
+
+    /**
      * Adds custom functions and returns an array of Twig_SimpleFunction objects
      * @param \gplcart\core\Controller $controller
      * @return array
      */
     protected function getDefaultFunctions($controller)
     {
+        if (!$controller instanceof \gplcart\core\Controller) {
+            throw new \InvalidArgumentException('Argument must be instance of \gplcart\core\Controller');
+        }
+
         $functions = array();
 
         $functions[] = new \Twig_SimpleFunction('error', function ($key = null, $has_error = null, $no_error = '') use ($controller) {
