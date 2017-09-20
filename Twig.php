@@ -91,7 +91,7 @@ class Twig extends Module
      * Returns a TWIG instance for the given file directory
      * @param string $path
      * @param \gplcart\core\Controller $object
-     * @retrun \Twig_Environment
+     * @return \Twig_Environment
      */
     public function getTwigInstance($path, $object)
     {
