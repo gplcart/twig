@@ -18,7 +18,7 @@ class Twig extends Module
 {
 
     /**
-     * An array of TWIG instances keyed by file directory
+     * An array of TWIG instances keyed by a file directory
      * @var array
      */
     protected $twig = array();
@@ -134,10 +134,14 @@ class Twig extends Module
     {
         $parts = explode('/', $template);
         $file = array_pop($parts);
-        $twig = $this->getTwigInstance(implode('/', $parts), $object);
 
-        $controller_data = $object->getData();
-        return $twig->loadTemplate($file)->render(array_merge($controller_data, $data));
+        try {
+            $twig = $this->getTwigInstance(implode('/', $parts), $object);
+            $controller_data = $object->getData();
+            return $twig->loadTemplate($file)->render(array_merge($controller_data, $data));
+        } catch (\Exception $ex) {
+            return $ex->getMessage();
+        }
     }
 
     /**
@@ -148,15 +152,14 @@ class Twig extends Module
      */
     public function validate($file, $controller)
     {
-        $info = pathinfo($file);
-        $twig = $this->getTwigInstance($info['dirname'], $controller);
-
         try {
+            $info = pathinfo($file);
+            $twig = $this->getTwigInstance($info['dirname'], $controller);
             $content = file_get_contents($file);
             $twig->parse($twig->tokenize(new \Twig_Source($content, $info['basename'])));
             return true;
-        } catch (\Twig_Error_Syntax $e) {
-            return $e->getMessage();
+        } catch (\Exception $ex) {
+            return $ex->getMessage();
         }
     }
 
