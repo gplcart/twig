@@ -132,6 +132,10 @@ class Twig extends Module
      */
     public function render($template, $data, $object)
     {
+        if (!$object instanceof \gplcart\core\Controller) {
+            throw new \InvalidArgumentException('Third argument must be instance of \gplcart\core\Controller');
+        }
+
         $parts = explode('/', $template);
         $file = array_pop($parts);
 
