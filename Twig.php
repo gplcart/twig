@@ -132,10 +132,9 @@ class Twig extends Module
      */
     public function render($template, $data, $object)
     {
-        $parts = explode('/', $template);
-        $file = array_pop($parts);
-
         try {
+            $parts = explode('/', $template);
+            $file = array_pop($parts);
             $twig = $this->getTwigInstance(implode('/', $parts), $object);
             $controller_data = $object->getData();
             return $twig->loadTemplate($file)->render(array_merge($controller_data, $data));
