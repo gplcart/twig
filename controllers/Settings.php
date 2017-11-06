@@ -42,7 +42,7 @@ class Settings extends BackendController
         $this->setTitleEditSettings();
         $this->setBreadcrumbEditSettings();
 
-        $this->setData('settings', $this->config->module('twig'));
+        $this->setData('settings', $this->config->getFromModule('twig'));
 
         $this->submitSettings();
         $this->outputEditSettings();

@@ -9,7 +9,8 @@
 
 namespace gplcart\modules\twig;
 
-use gplcart\core\Module;
+use gplcart\core\Module,
+    gplcart\core\Config;
 
 /**
  * Main class for Twig module
@@ -24,11 +25,11 @@ class Twig extends Module
     protected $twig = array();
 
     /**
-     * Constructor
+     * @param Config $config
      */
-    public function __construct()
+    public function __construct(Config $config)
     {
-        parent::__construct();
+        parent::__construct($config);
     }
 
     /**
@@ -99,7 +100,7 @@ class Twig extends Module
 
         if (empty($this->twig)) {
             $this->getLibrary()->load('twig');
-            $options = $this->config->module('twig');
+            $options = $this->config->getFromModule('twig');
         }
 
         if (isset($this->twig[$path])) {
