@@ -13,7 +13,7 @@ Custom TWIG functions added by this module:
 - attributes()
 - config()
 - configTheme()
-- summary()
+- teaser()
 - filter()
 - truncate()
 - path()

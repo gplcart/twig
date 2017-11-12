@@ -208,8 +208,8 @@ class Twig extends Module
             return $controller->configTheme($key, $default);
         });
 
-        $functions[] = new \Twig_SimpleFunction('summary', function ($text, $xss = false, $filter = null) use ($controller) {
-            return $controller->summary($text, $xss, $filter);
+        $functions[] = new \Twig_SimpleFunction('teaser', function ($text, $xss = false, $filter = null) use ($controller) {
+            return $controller->teaser($text, $xss, $filter);
         }, array('is_safe' => array('all')));
 
         $functions[] = new \Twig_SimpleFunction('filter', function ($text, $filter = null) use ($controller) {
