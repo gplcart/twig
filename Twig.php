@@ -32,6 +32,8 @@ class Twig extends Module
         parent::__construct($config);
     }
 
+    /* ------------------------ Hooks ------------------------ */
+
     /**
      * Implements hook "library.list"
      * @param array $libraries
@@ -75,26 +77,54 @@ class Twig extends Module
      * @param array $templates
      * @param array $data
      * @param null|string $rendered
-     * @param \gplcart\core\Controller $object
+     * @param \gplcart\core\Controller $controller
      */
-    public function hookTemplateRender($templates, $data, &$rendered, $object)
+    public function hookTemplateRender($templates, $data, &$rendered, $controller)
     {
-        list($original, $overridden) = $templates;
-
-        if (is_file("$overridden.twig")) {
-            $rendered = $this->render("$overridden.twig", $data, $object);
-        } else if (is_file("$original.twig")) {
-            $rendered = $this->render("$original.twig", $data, $object);
-        }
+        $this->setRenderedTemplate($templates, $data, $rendered, $controller);
     }
+
+    /**
+     * Implements hook "module.enable.after"
+     */
+    public function hookModuleEnableAfter()
+    {
+        $this->getLibrary()->clearCache();
+    }
+
+    /**
+     * Implements hook "module.disable.after"
+     */
+    public function hookModuleDisableAfter()
+    {
+        $this->getLibrary()->clearCache();
+    }
+
+    /**
+     * Implements hook "module.install.after"
+     */
+    public function hookModuleInstallAfter()
+    {
+        $this->getLibrary()->clearCache();
+    }
+
+    /**
+     * Implements hook "module.uninstall.after"
+     */
+    public function hookModuleUninstallAfter()
+    {
+        $this->getLibrary()->clearCache();
+    }
+
+    /* ------------------------ API ------------------------ */
 
     /**
      * Returns a TWIG instance for the given file directory
      * @param string $path
-     * @param \gplcart\core\Controller $object
+     * @param \gplcart\core\Controller $controller
      * @return \Twig_Environment
      */
-    public function getTwigInstance($path, $object)
+    public function getTwigInstance($path, $controller)
     {
         $options = array();
 
@@ -117,7 +147,7 @@ class Twig extends Module
             $twig->addExtension(new \Twig_Extension_Debug());
         }
 
-        foreach ($this->getDefaultFunctions($object) as $function) {
+        foreach ($this->getDefaultFunctions($controller) as $function) {
             $twig->addFunction($function);
         }
 
@@ -160,6 +190,26 @@ class Twig extends Module
             return true;
         } catch (\Exception $ex) {
             return $ex->getMessage();
+        }
+    }
+
+    /* ------------------------ Helpers ------------------------ */
+
+    /**
+     * Sets rendered .twig template
+     * @param array $templates
+     * @param array $data
+     * @param null|string $rendered
+     * @param \gplcart\core\Controller $controller
+     */
+    protected function setRenderedTemplate($templates, $data, &$rendered, $controller)
+    {
+        list($original, $overridden) = $templates;
+
+        if (is_file("$overridden.twig")) {
+            $rendered = $this->render("$overridden.twig", $data, $controller);
+        } else if (is_file("$original.twig")) {
+            $rendered = $this->render("$original.twig", $data, $controller);
         }
     }
 
@@ -225,38 +275,6 @@ class Twig extends Module
         });
 
         return $functions;
-    }
-
-    /**
-     * Implements hook "module.enable.after"
-     */
-    public function hookModuleEnableAfter()
-    {
-        $this->getLibrary()->clearCache();
-    }
-
-    /**
-     * Implements hook "module.disable.after"
-     */
-    public function hookModuleDisableAfter()
-    {
-        $this->getLibrary()->clearCache();
-    }
-
-    /**
-     * Implements hook "module.install.after"
-     */
-    public function hookModuleInstallAfter()
-    {
-        $this->getLibrary()->clearCache();
-    }
-
-    /**
-     * Implements hook "module.uninstall.after"
-     */
-    public function hookModuleUninstallAfter()
-    {
-        $this->getLibrary()->clearCache();
     }
 
 }
