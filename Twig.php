@@ -9,13 +9,13 @@
 
 namespace gplcart\modules\twig;
 
-use gplcart\core\Module,
-    gplcart\core\Config;
+use gplcart\core\Library,
+    gplcart\core\Module;
 
 /**
  * Main class for Twig module
  */
-class Twig extends Module
+class Twig
 {
 
     /**
@@ -25,14 +25,26 @@ class Twig extends Module
     protected $twig = array();
 
     /**
-     * @param Config $config
+     * Module class instance
+     * @var \gplcart\core\Module $module
      */
-    public function __construct(Config $config)
-    {
-        parent::__construct($config);
-    }
+    protected $module;
 
-    /* ------------------------ Hooks ------------------------ */
+    /**
+     * Library class instance
+     * @var \gplcart\core\Library $library
+     */
+    protected $library;
+
+    /**
+     * @param Module $module
+     * @param Library $library
+     */
+    public function __construct(Module $module, Library $library)
+    {
+        $this->module = $module;
+        $this->library = $library;
+    }
 
     /**
      * Implements hook "library.list"
@@ -89,7 +101,7 @@ class Twig extends Module
      */
     public function hookModuleEnableAfter()
     {
-        $this->getLibrary()->clearCache();
+        $this->library->clearCache();
     }
 
     /**
@@ -97,7 +109,7 @@ class Twig extends Module
      */
     public function hookModuleDisableAfter()
     {
-        $this->getLibrary()->clearCache();
+        $this->library->clearCache();
     }
 
     /**
@@ -105,7 +117,7 @@ class Twig extends Module
      */
     public function hookModuleInstallAfter()
     {
-        $this->getLibrary()->clearCache();
+        $this->library->clearCache();
     }
 
     /**
@@ -113,24 +125,27 @@ class Twig extends Module
      */
     public function hookModuleUninstallAfter()
     {
-        $this->getLibrary()->clearCache();
+        $this->library->clearCache();
     }
-
-    /* ------------------------ API ------------------------ */
 
     /**
      * Returns a TWIG instance for the given file directory
      * @param string $path
      * @param \gplcart\core\Controller $controller
      * @return \Twig_Environment
+     * @throws \InvalidArgumentException
      */
     public function getTwigInstance($path, $controller)
     {
+        if (!$controller instanceof \gplcart\core\Controller) {
+            throw new \InvalidArgumentException('Second argument must be instance of \gplcart\core\Controller');
+        }
+
         $options = array();
 
         if (empty($this->twig)) {
-            $this->getLibrary()->load('twig');
-            $options = $this->config->getFromModule('twig');
+            $this->library->load('twig');
+            $options = $this->module->getSettings('twig');
         }
 
         if (isset($this->twig[$path])) {
@@ -158,16 +173,16 @@ class Twig extends Module
      * Renders a .twig template
      * @param string $template
      * @param array $data
-     * @param \gplcart\core\Controller $object
+     * @param \gplcart\core\Controller $controller
      * @return string
      */
-    public function render($template, $data, $object)
+    public function render($template, $data, $controller)
     {
         try {
             $parts = explode('/', $template);
             $file = array_pop($parts);
-            $twig = $this->getTwigInstance(implode('/', $parts), $object);
-            $controller_data = $object->getData();
+            $twig = $this->getTwigInstance(implode('/', $parts), $controller);
+            $controller_data = $controller->getData();
             return $twig->loadTemplate($file)->render(array_merge($controller_data, $data));
         } catch (\Exception $ex) {
             return $ex->getMessage();
@@ -183,17 +198,15 @@ class Twig extends Module
     public function validate($file, $controller)
     {
         try {
-            $info = pathinfo($file);
-            $twig = $this->getTwigInstance($info['dirname'], $controller);
+            $pathinfo = pathinfo($file);
+            $twig = $this->getTwigInstance($pathinfo['dirname'], $controller);
             $content = file_get_contents($file);
-            $twig->parse($twig->tokenize(new \Twig_Source($content, $info['basename'])));
+            $twig->parse($twig->tokenize(new \Twig_Source($content, $pathinfo['basename'])));
             return true;
         } catch (\Exception $ex) {
             return $ex->getMessage();
         }
     }
-
-    /* ------------------------ Helpers ------------------------ */
 
     /**
      * Sets rendered .twig template
@@ -220,10 +233,6 @@ class Twig extends Module
      */
     protected function getDefaultFunctions($controller)
     {
-        if (!$controller instanceof \gplcart\core\Controller) {
-            throw new \InvalidArgumentException('Argument must be instance of \gplcart\core\Controller');
-        }
-
         $functions = array();
 
         $functions[] = new \Twig_SimpleFunction('error', function ($key = null, $has_error = null, $no_error = '') use ($controller) {
