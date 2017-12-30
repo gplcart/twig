@@ -251,8 +251,8 @@ class Module
             return $controller->url($path, $query, $absolute);
         });
 
-        $functions[] = new \Twig_SimpleFunction('date', function ($timestamp = null, $full = true, $unix_format = '') use ($controller) {
-            return $controller->date($timestamp, $full, $unix_format);
+        $functions[] = new \Twig_SimpleFunction('date', function ($timestamp = null, $full = true) use ($controller) {
+            return $controller->date($timestamp, $full);
         });
 
         $functions[] = new \Twig_SimpleFunction('attributes', function ($attributes) use ($controller) {
