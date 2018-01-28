@@ -18,7 +18,7 @@
       </div>
       <div class="help-block">
         <div class="text-muted">
-          <?php echo $this->text('If enabled you can use native Twig debugger to see available variables in templates {{ dump }}'); ?>
+          <?php echo $this->text('If enabled, then you can use native Twig debugger to see available variables in templates <code>{{ dump }}</code>'); ?>
         </div>
       </div>
     </div>
@@ -48,7 +48,7 @@
       </div>
       <div class="help-block">
         <div class="text-muted">
-          <?php echo $this->text('If enabled Twig will throw exceptions on invalid variables. Should be disabled in production!'); ?>
+          <?php echo $this->text('If enabled, then Twig will throw exceptions on invalid variables. Should be disabled in production!'); ?>
         </div>
       </div>
     </div>
