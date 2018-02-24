@@ -9,8 +9,16 @@
 
 namespace gplcart\modules\twig;
 
-use gplcart\core\Module,
-    gplcart\core\Library;
+use Exception;
+use gplcart\core\Controller;
+use gplcart\core\Library;
+use gplcart\core\Module;
+use InvalidArgumentException;
+use Twig_Environment;
+use Twig_Extension_Debug;
+use Twig_Loader_Filesystem;
+use Twig_SimpleFunction;
+use Twig_Source;
 
 /**
  * Main class for Twig module
@@ -131,14 +139,14 @@ class Main
     /**
      * Returns a TWIG instance for the given file directory
      * @param string $path
-     * @param \gplcart\core\Controller $controller
-     * @return \Twig_Environment
-     * @throws \InvalidArgumentException
+     * @param Controller $controller
+     * @return Twig_Environment
+     * @throws InvalidArgumentException
      */
     public function getTwigInstance($path, $controller)
     {
-        if (!$controller instanceof \gplcart\core\Controller) {
-            throw new \InvalidArgumentException('Second argument must be instance of \gplcart\core\Controller');
+        if (!$controller instanceof Controller) {
+            throw new InvalidArgumentException('Second argument must be instance of \gplcart\core\Controller');
         }
 
         $options = array();
@@ -156,10 +164,10 @@ class Main
             $options['cache'] = __DIR__ . '/cache';
         }
 
-        $twig = new \Twig_Environment(new \Twig_Loader_Filesystem($path), $options);
+        $twig = new Twig_Environment(new Twig_Loader_Filesystem($path), $options);
 
         if (!empty($options['debug'])) {
-            $twig->addExtension(new \Twig_Extension_Debug());
+            $twig->addExtension(new Twig_Extension_Debug());
         }
 
         foreach ($this->getDefaultFunctions($controller) as $function) {
@@ -173,10 +181,10 @@ class Main
      * Renders a .twig template
      * @param string $template
      * @param array $data
-     * @param \gplcart\core\Controller $controller
+     * @param Controller $controller
      * @return string
      */
-    public function render($template, $data, $controller)
+    public function render($template, $data, Controller $controller)
     {
         try {
             $parts = explode('/', $template);
@@ -184,7 +192,7 @@ class Main
             $twig = $this->getTwigInstance(implode('/', $parts), $controller);
             $controller_data = $controller->getData();
             return $twig->loadTemplate($file)->render(array_merge($controller_data, $data));
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             return $ex->getMessage();
         }
     }
@@ -192,18 +200,18 @@ class Main
     /**
      * Validate a TWIG template syntax
      * @param string $file
-     * @param \gplcart\core\Controller $controller
+     * @param Controller $controller
      * @return boolean|string
      */
-    public function validate($file, $controller)
+    public function validate($file, Controller $controller)
     {
         try {
             $pathinfo = pathinfo($file);
             $twig = $this->getTwigInstance($pathinfo['dirname'], $controller);
             $content = file_get_contents($file);
-            $twig->parse($twig->tokenize(new \Twig_Source($content, $pathinfo['basename'])));
+            $twig->parse($twig->tokenize(new Twig_Source($content, $pathinfo['basename'])));
             return true;
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             return $ex->getMessage();
         }
     }
@@ -213,9 +221,9 @@ class Main
      * @param array $templates
      * @param array $data
      * @param null|string $rendered
-     * @param \gplcart\core\Controller $controller
+     * @param Controller $controller
      */
-    protected function setRenderedTemplate($templates, $data, &$rendered, $controller)
+    protected function setRenderedTemplate($templates, $data, &$rendered, Controller $controller)
     {
         list($original, $overridden) = $templates;
 
@@ -228,58 +236,58 @@ class Main
 
     /**
      * Adds custom functions and returns an array of Twig_SimpleFunction objects
-     * @param \gplcart\core\Controller $controller
+     * @param Controller $controller
      * @return array
      */
-    protected function getDefaultFunctions($controller)
+    protected function getDefaultFunctions(Controller $controller)
     {
         $functions = array();
 
-        $functions[] = new \Twig_SimpleFunction('error', function ($key = null, $has_error = null, $no_error = '') use ($controller) {
+        $functions[] = new Twig_SimpleFunction('error', function ($key = null, $has_error = null, $no_error = '') use ($controller) {
             return $controller->error($key, $has_error, $no_error);
         }, array('is_safe' => array('all')));
 
-        $functions[] = new \Twig_SimpleFunction('text', function ($text, $arguments = array()) use ($controller) {
+        $functions[] = new Twig_SimpleFunction('text', function ($text, $arguments = array()) use ($controller) {
             return $controller->text($text, $arguments);
         }, array('is_safe' => array('all')));
 
-        $functions[] = new \Twig_SimpleFunction('access', function ($permission) use ($controller) {
+        $functions[] = new Twig_SimpleFunction('access', function ($permission) use ($controller) {
             return $controller->access($permission);
         });
 
-        $functions[] = new \Twig_SimpleFunction('url', function ($path = '', array $query = array(), $absolute = false) use ($controller) {
+        $functions[] = new Twig_SimpleFunction('url', function ($path = '', array $query = array(), $absolute = false) use ($controller) {
             return $controller->url($path, $query, $absolute);
         });
 
-        $functions[] = new \Twig_SimpleFunction('date', function ($timestamp = null, $full = true) use ($controller) {
+        $functions[] = new Twig_SimpleFunction('date', function ($timestamp = null, $full = true) use ($controller) {
             return $controller->date($timestamp, $full);
         });
 
-        $functions[] = new \Twig_SimpleFunction('attributes', function ($attributes) use ($controller) {
+        $functions[] = new Twig_SimpleFunction('attributes', function ($attributes) use ($controller) {
             return $controller->attributes($attributes);
         }, array('is_safe' => array('all')));
 
-        $functions[] = new \Twig_SimpleFunction('config', function ($key = null, $default = null) use ($controller) {
+        $functions[] = new Twig_SimpleFunction('config', function ($key = null, $default = null) use ($controller) {
             return $controller->config($key, $default);
         });
 
-        $functions[] = new \Twig_SimpleFunction('configTheme', function ($key = null, $default = null) use ($controller) {
+        $functions[] = new Twig_SimpleFunction('configTheme', function ($key = null, $default = null) use ($controller) {
             return $controller->configTheme($key, $default);
         });
 
-        $functions[] = new \Twig_SimpleFunction('teaser', function ($text, $xss = false, $filter = null) use ($controller) {
+        $functions[] = new Twig_SimpleFunction('teaser', function ($text, $xss = false, $filter = null) use ($controller) {
             return $controller->teaser($text, $xss, $filter);
         }, array('is_safe' => array('all')));
 
-        $functions[] = new \Twig_SimpleFunction('filter', function ($text, $filter = null) use ($controller) {
+        $functions[] = new Twig_SimpleFunction('filter', function ($text, $filter = null) use ($controller) {
             return $controller->filter($text, $filter);
         }, array('is_safe' => array('all')));
 
-        $functions[] = new \Twig_SimpleFunction('truncate', function ($string, $length = 100, $trimmarker = '...') use ($controller) {
+        $functions[] = new Twig_SimpleFunction('truncate', function ($string, $length = 100, $trimmarker = '...') use ($controller) {
             return $controller->truncate($string, $length, $trimmarker);
         });
 
-        $functions[] = new \Twig_SimpleFunction('path', function ($path = null) use ($controller) {
+        $functions[] = new Twig_SimpleFunction('path', function ($path = null) use ($controller) {
             return $controller->path($path);
         });
 

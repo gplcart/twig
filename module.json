@@ -1,15 +1,15 @@
 {
-    "name": "Twig",
-    "version": "1.0.0",
-    "description": "A GPL Cart module that allows to render .twig templates",
-    "author": "Iurii Makukh ",
-    "core": "1.x",
-    "license": "GPL-3.0+",
-    "configure": "admin/module/settings/twig",
-    "settings": {
-        "cache": true,
-        "debug": false,
-        "auto_reload": false,
-        "strict_variables": false
-    }
+  "name": "Twig",
+  "version": "1.0.0",
+  "description": "A GPL Cart module that allows to render .twig templates",
+  "author": "Iurii Makukh ",
+  "core": "1.x",
+  "license": "GPL-3.0+",
+  "configure": "admin/module/settings/twig",
+  "settings": {
+    "cache": true,
+    "debug": false,
+    "auto_reload": false,
+    "strict_variables": false
+  }
 }
