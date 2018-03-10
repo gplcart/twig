@@ -67,14 +67,8 @@ class Main
             'download' => 'https://github.com/twigphp/Twig/archive/v1.33.0.zip',
             'type' => 'php',
             'module' => 'twig',
-            'version_source' => array(
-                'lines' => 100,
-                'pattern' => '/.*VERSION.*(\\d+\\.+\\d+\\.+\\d+)/',
-                'file' => 'vendor/twig/twig/lib/Twig/Environment.php'
-            ),
-            'files' => array(
-                'vendor/autoload.php'
-            )
+            'version' => '1.33.0',
+            'vendor' => 'twig/twig'
         );
     }
 
